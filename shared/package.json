@@ -1,0 +1,13 @@
+{
+  "name": "spot-a-john-shared",
+  "version": "1.0.0",
+  "description": "Shared utilities and types for Spot-a-John",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build step needed for shared utilities'",
+    "test": "echo 'No tests configured yet'"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+} 

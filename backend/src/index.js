@@ -23,9 +23,9 @@ app.get('/', (req, res) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', timestamp: new Date().toISOString() });
-});
+// app.get('/health', (req, res) => {
+//   res.json({ status: 'OK', timestamp: new Date().toISOString() });
+// });
 
 // Start server
 app.listen(PORT, () => {

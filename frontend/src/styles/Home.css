@@ -1,8 +1,9 @@
 html, body {
     height: 100%;
-    width: 100%;
+    width: 100vw;
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 /* Main container */
@@ -15,6 +16,7 @@ html, body {
     background-color: #E9F7F2;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 /* Left section */
@@ -290,15 +292,104 @@ html, body {
 }
 
 @media (max-width: 700px) {
-    .howItWorksSection {
-        padding: 2.5rem 0 2.5rem 0;
-    }
-    .howItWorksSteps {
-        gap: 2.5rem;
-    }
-    .howItWorksStepDesc {
-        font-size: 1rem;
-    }
+  .startFrame, .whyUsSection, .howItWorksSection, .callToAction {
+    box-sizing: border-box;
+  }
+  .startFrame {
+    flex-direction: column;
+    min-width: 100vw;
+    min-height: 100vh;
+    padding: 0 1rem;
+    width: 100vw;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  .leftSection, .rightSection {
+    padding: 1rem 0.5rem;
+    box-sizing: border-box;
+  }
+  .rightSection {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 0.5rem;
+    padding-bottom: 0;
+    margin-top: 0;
+  }
+  .logo h3 {
+    font-size: 1.3rem;
+  }
+  .callToAction {
+    margin-left: 0;
+    margin-top: 0;
+    max-width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+  .callToAction h1 {
+    font-size: 2rem;
+    height: auto;
+    word-break: break-word;
+  }
+  .callToAction h2 {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+  .ctaButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .illustration img {
+    width: 65vw;
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+  }
+  .whyUsSection, .howItWorksSection {
+    padding: 1.5rem 0 2rem 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+  .whyUsTitle, .howItWorksTitle {
+    font-size: 1.3rem;
+  }
+  .whyUsSubtitle, .howItWorksSubtitle {
+    font-size: 1rem;
+  }
+  .whyUsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .whyUsCard {
+    padding: 1rem 0.5rem;
+    box-sizing: border-box;
+    word-break: break-word;
+  }
+  .howItWorksSteps {
+    gap: 1.5rem;
+    padding: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .howItWorksStepTitle {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+  .howItWorksStepDesc {
+    font-size: 0.9rem;
+    max-width: 95vw;
+    word-break: break-word;
+  }
 }
 
 /* Footer Section */
@@ -366,9 +457,15 @@ html, body {
         flex-direction: column;
         gap: 0.5rem;
         font-size: 1rem;
-        align-items: flex-start;
+        align-items: center;
+        text-align: center;
     }
     .footerLogo {
         font-size: 1.3rem;
+    }
+    .footerCopyright,
+    .footerLocation {
+        text-align: center;
+        width: 100%;
     }
 } 

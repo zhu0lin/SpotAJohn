@@ -29,6 +29,7 @@
   ],
   "dependencies": {
     "firebase": "^12.0.0",
+    "firebase-admin": "^13.4.0",
     "react-router-dom": "^7.6.3"
   }
 }

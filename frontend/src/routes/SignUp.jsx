@@ -1,25 +1,62 @@
-import '../styles/SignUp.css';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../styles/SignUp.css';
 import SpotaJohnIcon from "../assets/icon.png";
 import Footer from "../components/Footer";
-import { useNavigate } from 'react-router-dom';
+import { app, auth, provider } from "../firebase";
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+
 
 export default function SignUp() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleSignUp = (e) => {
+
+
+  const handleEmailAndPassSignUp = (e) => {
     e.preventDefault();
     // TODO: Implement sign up logic
     alert(`Sign up with email: ${email}, password: ${password}`);
+
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(`${errorCode} : ${errorMessage}`);
+      })
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignUp = () => {
     // TODO: Implement Google OAuth logic here
-    alert('Google Sign-In Clicked!');
-  };
+    alert('Google Sign-Up Clicked!');
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        // IdP data available using getAdditionalUserInfo(result)
+        // ...
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+  }
 
   return (
     <div className="signup-container">
@@ -31,7 +68,7 @@ export default function SignUp() {
           </h3>
         </div>
       </header>
-      <form className="signup-form" onSubmit={handleSignUp}>
+      <form className="signup-form" onSubmit={handleEmailAndPassSignUp}>
         <h1 className="signup-title">Sign Up</h1>
         <div className="signup-subtitle">Get started with Spot a John</div>
         <div className="signup-field-group">
@@ -84,7 +121,7 @@ export default function SignUp() {
         </div>
         <button
           type="button"
-          onClick={handleGoogleSignIn}
+          onClick={handleGoogleSignUp}
           className="signup-google-btn"
         >
           <svg width="24" height="24" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M44.5 20H24v8.5h11.7C34.7 33.9 29.8 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.3 4.5 29.4 2 24 2 12.9 2 4 10.9 4 22s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.3-4z" /><path fill="#34A853" d="M6.3 14.7l7 5.1C15.2 16.2 19.2 13 24 13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.3 4.5 29.4 2 24 2 15.6 2 8.1 7.6 6.3 14.7z" /><path fill="#FBBC05" d="M24 44c5.6 0 10.3-1.8 13.7-4.9l-6.3-5.2C29.8 37 24 37 24 37c-5.8 0-10.7-3.1-13.2-7.6l-7 5.4C8.1 40.4 15.6 44 24 44z" /><path fill="#EA4335" d="M44.5 20H24v8.5h11.7c-1.6 4.1-6.1 7.5-11.7 7.5-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.3 4.5 29.4 2 24 2c-11 0-20 8.9-20 20s9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.3-4z" /></g></svg>

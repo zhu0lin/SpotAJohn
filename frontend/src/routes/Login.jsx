@@ -1,8 +1,9 @@
-import '../styles/SignUp.css';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SpotaJohnIcon from "../assets/icon.png";
 import Footer from "../components/Footer";
-import { useNavigate } from 'react-router-dom';
+import '../styles/SignUp.css';
+
 
 export default function Login() {
   const [email, setEmail] = useState('');

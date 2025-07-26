@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import Home from "./routes/Home";
 import SignUp from "./routes/SignUp";
 import Login from "./routes/Login";
+import UserHome from "./routes/UserHome";
 
 function App() {
 
@@ -22,12 +23,13 @@ function App() {
                 <Home />
                 </>
                 :
-                null
+                <UserHome />
                 }
               </>
             } />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/home" element={<UserHome />}/>
           {/*Add more routes here */}
         </Routes>
       </BrowserRouter>

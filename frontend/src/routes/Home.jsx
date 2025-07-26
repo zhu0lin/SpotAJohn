@@ -1,8 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import SpotaJohnIcon from "../assets/icon.png";
 import startFrame from "../assets/start_frame.png";
-import '../styles/Home.css';
 import Footer from "../components/Footer";
-import { useNavigate } from 'react-router-dom';
+import '../styles/Home.css';
+
 
 const whyUsFeatures = [
     {
@@ -35,16 +36,6 @@ const whyUsFeatures = [
     }
 ];
 
-function WhyUsCard({ icon, title, desc }) {
-    return (
-        <div className="whyUsCard">
-            <div className="whyUsIcon">{icon}</div>
-            <div className="whyUsCardTitle">{title}</div>
-            <div className="whyUsCardDesc">{desc}</div>
-        </div>
-    );
-}
-
 const howItWorksSteps = [
     {
         number: 1,
@@ -62,6 +53,17 @@ const howItWorksSteps = [
         desc: "Make an account, post about locations, discuss concerns, and embrace community with Spot a John."
     }
 ];
+
+function WhyUsCard({ icon, title, desc }) {
+    return (
+        <div className="whyUsCard">
+            <div className="whyUsIcon">{icon}</div>
+            <div className="whyUsCardTitle">{title}</div>
+            <div className="whyUsCardDesc">{desc}</div>
+        </div>
+    );
+}
+
 
 export default function Home() {
     const navigate = useNavigate();

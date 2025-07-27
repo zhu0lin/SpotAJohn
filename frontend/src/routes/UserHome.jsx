@@ -10,7 +10,7 @@ export default function UserHome() {
 
     const handleLogout = () => {
         // TODO: Implement logout logic
-        console.log('Logout clicked');
+        
         navigate('/login');
     };
 

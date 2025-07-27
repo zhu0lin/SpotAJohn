@@ -1,0 +1,144 @@
+/* ErrorMessage Component Styles */
+
+.error-message {
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.error-message__icon {
+  flex-shrink: 0;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.error-message__content {
+  flex: 1;
+}
+
+.error-message__text {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.error-message__close {
+  margin-left: auto;
+  margin-right: -6px;
+  margin-top: -6px;
+  margin-bottom: -6px;
+  border-radius: 8px;
+  padding: 6px;
+  display: inline-flex;
+  height: 32px;
+  width: 32px;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.error-message__close:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.error-message__close:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Error type styles */
+.error-message--error {
+  background-color: #FEF2F2;
+  border-color: #FECACA;
+  color: #991B1B;
+}
+
+.error-message--error .error-message__icon {
+  color: #F87171;
+}
+
+.error-message--error .error-message__close {
+  color: #F87171;
+}
+
+/* Warning type styles */
+.error-message--warning {
+  background-color: #FFFBEB;
+  border-color: #FED7AA;
+  color: #92400E;
+}
+
+.error-message--warning .error-message__icon {
+  color: #F59E0B;
+}
+
+.error-message--warning .error-message__close {
+  color: #F59E0B;
+}
+
+/* Info type styles */
+.error-message--info {
+  background-color: #EFF6FF;
+  border-color: #BFDBFE;
+  color: #1E40AF;
+}
+
+.error-message--info .error-message__icon {
+  color: #60A5FA;
+}
+
+.error-message--info .error-message__close {
+  color: #60A5FA;
+}
+
+/* Success type styles */
+.error-message--success {
+  background-color: #F0FDF4;
+  border-color: #BBF7D0;
+  color: #166534;
+}
+
+.error-message--success .error-message__icon {
+  color: #4ADE80;
+}
+
+.error-message--success .error-message__close {
+  color: #4ADE80;
+}
+
+/* Icon styles */
+.error-message__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.error-message__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .error-message {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .error-message__text {
+    font-size: 13px;
+  }
+  
+  .error-message__icon svg,
+  .error-message__close svg {
+    width: 18px;
+    height: 18px;
+  }
+} 

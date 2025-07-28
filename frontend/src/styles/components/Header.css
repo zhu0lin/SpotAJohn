@@ -1,0 +1,144 @@
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-bottom: 1px solid #e9ecef;
+}
+
+.header-left .logo {
+    cursor: pointer;
+}
+
+.header-left .logo h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.header-left .logo img {
+    width: 32px;
+    height: 32px;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.welcome-text {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 20px;
+    transition: background-color 0.2s ease;
+    color: #666;
+    font-size: 14px;
+}
+
+.profile-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.profile-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+.profile-btn span {
+    font-size: 14px;
+    color: #666;
+}
+
+.back-btn,
+.logout-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.back-btn {
+    margin-right: 10px;
+}
+
+.back-btn:hover,
+.logout-btn:hover {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 1rem 1.5rem;
+        flex-direction: row;
+        gap: 0;
+    }
+    
+    .header-left {
+        flex: 1;
+    }
+    
+    .header-right {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    
+    .header-actions {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    
+    .welcome-text {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header {
+        padding: 1rem;
+    }
+    
+    .header-actions {
+        gap: 0.25rem;
+    }
+    
+    .profile-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .profile-btn span {
+        display: none;
+    }
+    
+    .logout-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+} 

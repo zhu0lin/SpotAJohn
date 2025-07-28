@@ -1,5 +1,5 @@
 /* React imports */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /* Style imports */
@@ -19,6 +19,10 @@ import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 
 
 export default function Login() {
+  useEffect(() => {
+    document.title = 'Spot a John - Login';
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -51,7 +55,7 @@ export default function Login() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const user = userCredential.user;
-      navigate('/home');
+      
     } catch (error) {
       switch (error.code) {
         case 'auth/invalid-email':

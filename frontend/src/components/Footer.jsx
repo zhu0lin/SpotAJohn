@@ -1,5 +1,5 @@
 import SpotaJohnIcon from "../assets/icon.png"
-import "../styles/Footer.css"
+import "../styles/components/Footer.css"
 
 export default function Footer() {
 

@@ -1,7 +1,17 @@
+/* React imports */
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
+
+/* Asset imports */
 import SpotaJohnIcon from "../assets/icon.png";
 import startFrame from "../assets/start_frame.png";
+
+/* Component imports */
 import Footer from "../components/Footer";
+
+/* Style imports */
 import '../styles/Home.css';
 
 
@@ -67,6 +77,11 @@ function WhyUsCard({ icon, title, desc }) {
 
 export default function Home() {
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = 'Spot a John - Home';
+    }, []);
+
     return (
         <>
             <div className="startFrame">
@@ -79,7 +94,10 @@ export default function Home() {
                     </div>
                     <div className="startFrameMainContent">
                         <div className="callToAction">
-                            <h1>Gotta Go? Know Where to Go</h1>
+                            <h1>
+                                <span>Gotta Go?</span>
+                                <span>Know Where to Go</span>
+                            </h1>
                             <h2>Because finding a clean restroom shouldn't feel like a scavenger hunt.</h2>
                             <div className="ctaButtons">
                                 <button className="getStartedBtn" onClick={() => navigate('/signup')}>Get Started</button>

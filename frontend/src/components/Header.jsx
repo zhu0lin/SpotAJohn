@@ -33,6 +33,18 @@ export default function Header({ userName, showProfileButton = true, showBackBut
             </div>
             <div className="header-right">
                 <div className="header-actions">
+                    <button
+                        onClick={() => navigate('/location-map')}
+                        className="nav-btn"
+                    >
+                        🗺️ Map
+                    </button>
+                    <button
+                        onClick={() => navigate('/location-list')}
+                        className="nav-btn"
+                    >
+                        📋 List
+                    </button>
                     {showProfileButton && (
                         <button
                             onClick={() => navigate('/profile')}

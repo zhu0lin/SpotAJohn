@@ -92,6 +92,19 @@ export default function UserHome() {
                     </div>
                 </div>
 
+                <div className="list-section">
+                    <div className="list-background">
+                        <div className="list-overlay">
+                            <button 
+                                className="list-btn"
+                                onClick={() => navigate('/location-list')}
+                            >
+                                📋 View Location List
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="quick-stats">
                     <h2>Your Activity</h2>
                     <div className="stats-grid">

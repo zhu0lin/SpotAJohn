@@ -13,7 +13,7 @@ export default function LocationMap() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        document.title = 'Spot a John - Location Map';
+        document.title = 'Spot a John - Map';
     }, []);
 
     return (

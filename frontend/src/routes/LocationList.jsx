@@ -15,7 +15,7 @@ export default function LocationList() {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        document.title = 'Spot a John - Location List';
+        document.title = 'Spot a John - List';
     }, []);
 
     return (

@@ -28,6 +28,7 @@
     "shared"
   ],
   "dependencies": {
+    "@googlemaps/markerclusterer": "^2.6.2",
     "firebase": "^12.0.0",
     "firebase-admin": "^13.4.0",
     "react-router-dom": "^7.6.3"

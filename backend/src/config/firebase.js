@@ -19,10 +19,16 @@ const serviceAccount = {
 
 // Initialize the app if it hasn't been initialized
 if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIREBASE_DATABASE_URL
-  });
+  const config = {
+    credential: admin.credential.cert(serviceAccount)
+  };
+  
+  // Only add databaseURL if it's provided and not empty
+  if (process.env.FIREBASE_DATABASE_URL) {
+    config.databaseURL = process.env.FIREBASE_DATABASE_URL;
+  }
+  
+  admin.initializeApp(config);
 }
 
 // Get Firestore instance

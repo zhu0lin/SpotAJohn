@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "build": "echo 'No build step for backend'",
-    "test": "jest"
+    "test": "jest",
+    "import-nyc": "node scripts/importNYCData.js"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",

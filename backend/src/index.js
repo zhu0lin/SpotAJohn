@@ -4,6 +4,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
+// Import routes
+import locationsRouter from './routes/locations.js';
+import nycLocationsRouter from './routes/nycLocations.js';
+
 // Load environment variables
 dotenv.config();
 
@@ -26,6 +30,10 @@ app.get('/', (req, res) => {
 // app.get('/health', (req, res) => {
 //   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 // });
+
+// API routes
+app.use('/api/locations', locationsRouter);
+app.use('/api/nyc-locations', nycLocationsRouter);
 
 // Start server
 app.listen(PORT, () => {

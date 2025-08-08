@@ -25,11 +25,20 @@ export default function LocationMap() {
         fetchLocations();
     }, []);
 
+    // Add markers when map is ready and locations are loaded
+    useEffect(() => {
+        if (map && locations.length > 0) {
+            addMarkersToMap(locations);
+        }
+    }, [map, locations]);
+
     // Initialize Google Maps
     const initMap = async () => {
         try {
+            const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
             const loader = new Loader({
-                apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+                apiKey: apiKey,
                 version: "weekly",
                 libraries: ["places", "marker"]
             });
@@ -47,7 +56,7 @@ export default function LocationMap() {
             setMap(mapInstance);
         } catch (error) {
             console.error('Error initializing map:', error);
-            setError('Failed to load map');
+            setError('Failed to load map: ' + error.message);
         }
     };
 
@@ -55,12 +64,15 @@ export default function LocationMap() {
     const fetchLocations = async () => {
         try {
             setLoading(true);
+            console.log('Fetching locations from backend...');
             const response = await fetch('http://localhost:3000/api/locations');
             const data = await response.json();
             
+            console.log('Received locations data:', data.success ? data.data.length : 'failed');
+            
             if (data.success) {
                 setLocations(data.data);
-                addMarkersToMap(data.data);
+                // Don't call addMarkersToMap here anymore - it will be called by useEffect
             } else {
                 setError('Failed to fetch locations');
             }
@@ -74,7 +86,11 @@ export default function LocationMap() {
 
     // Add markers to the map with clustering
     const addMarkersToMap = async (locationData) => {
-        if (!map) return;
+        console.log('Adding markers to map:', locationData.length, 'locations');
+        if (!map) {
+            console.log('Map not ready yet');
+            return;
+        }
 
         try {
             const { InfoWindow } = await google.maps.importLibrary("maps");
@@ -86,14 +102,23 @@ export default function LocationMap() {
                 disableAutoPan: true,
             });
 
+            // Close info window when clicking on the map
+            map.addListener('click', () => {
+                infoWindow.close();
+            });
+
             // Create markers array
             const markers = locationData.map((location, i) => {
+                // Make all markers red
+                const backgroundColor = "#dc3545"; // Red
+                const borderColor = "#c82333";
+
                 // Create custom pin element
                 const pinElement = new PinElement({
                     glyph: `${i + 1}`,
                     glyphColor: "white",
-                    background: "#28A745",
-                    borderColor: "#1e7e34",
+                    background: backgroundColor,
+                    borderColor: borderColor,
                 });
 
                 const marker = new AdvancedMarkerElement({
@@ -107,12 +132,22 @@ export default function LocationMap() {
                     const content = `
                         <div class="map-info-window">
                             <h3>${location.name}</h3>
-                            <p>${location.address}</p>
-                            <p>Rating: ${location.rating}/5</p>
-                            <p>Cleanliness: ${location.cleanliness}/5</p>
-                            ${location.accessibility ? '<p class="feature">♿ Accessible</p>' : ''}
-                            ${location.babyChanging ? '<p class="feature">👶 Baby Changing</p>' : ''}
-                            ${location.genderNeutral ? '<p class="feature">🌈 Gender Neutral</p>' : ''}
+                            <p><strong>Address:</strong> ${location.address}</p>
+                            ${location.source === 'nyc_open_data' ? `
+                                <p><strong>Type:</strong> ${location.locationType || 'Unknown'}</p>
+                                <p><strong>Operator:</strong> ${location.operator || 'Unknown'}</p>
+                                ${location.hoursOfOperation ? `<p><strong>Hours:</strong> ${location.hoursOfOperation}</p>` : ''}
+                                ${location.open ? `<p><strong>Open:</strong> ${location.open}</p>` : ''}
+                            ` : `
+                                <p><strong>Rating:</strong> ${location.rating}/5</p>
+                                <p><strong>Cleanliness:</strong> ${location.cleanliness}/5</p>
+                            `}
+                            <div class="features">
+                                ${location.accessibility ? '<span class="feature">♿ Accessible</span>' : ''}
+                                ${location.babyChanging ? '<span class="feature">👶 Baby Changing</span>' : ''}
+                                ${location.genderNeutral ? '<span class="feature">🌈 Gender Neutral</span>' : ''}
+                            </div>
+                            ${location.source === 'nyc_open_data' ? '<p class="source">Source: NYC Open Data</p>' : ''}
                         </div>
                     `;
                     infoWindow.setContent(content);
@@ -124,6 +159,7 @@ export default function LocationMap() {
 
             // Add marker clusterer to manage the markers
             new MarkerClusterer({ markers, map });
+            console.log('Successfully added', markers.length, 'markers to map');
 
         } catch (error) {
             console.error('Error adding markers to map:', error);

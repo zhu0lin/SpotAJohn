@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     background-color: #f8f9fa;
+    overflow-x: hidden; /* prevent horizontal overflow */
 }
 
 
@@ -157,6 +158,10 @@
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .quick-stats h2 {
@@ -171,6 +176,8 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .stat-item {
@@ -203,6 +210,25 @@
 @media (max-width: 768px) {
     .user-home-main {
         padding: 1rem 1.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* center children */
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* Center sections and constrain width */
+    .welcome-section,
+    .map-section,
+    .list-section,
+    .quick-stats {
+        width: 100%;
+        max-width: 640px;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box; /* include padding in width to avoid overflow */
     }
     
     .welcome-section h1 {
@@ -226,6 +252,18 @@
 @media (max-width: 480px) {
     .user-home-main {
         padding: 1rem 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+    }
+
+    .welcome-section,
+    .map-section,
+    .list-section,
+    .quick-stats {
+        max-width: 600px;
+        box-sizing: border-box;
     }
     
     .welcome-section h1 {
@@ -247,6 +285,6 @@
     }
     
     .quick-stats {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 } 

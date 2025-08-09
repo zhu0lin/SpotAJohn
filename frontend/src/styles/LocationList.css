@@ -46,14 +46,12 @@
     padding: 2rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .search-bar {
-    flex: 1;
-    min-width: 250px;
+    width: 100%;
 }
 
 .search-input {
@@ -70,24 +68,63 @@
     border-color: #007bff;
 }
 
-.filter-options {
-    min-width: 200px;
+.filter-checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
 }
 
-.filter-select {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: white;
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     cursor: pointer;
-    transition: border-color 0.2s ease;
+    font-size: 0.9rem;
+    color: #333;
+    user-select: none;
 }
 
-.filter-select:focus {
-    outline: none;
+.checkbox-item input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.checkmark {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 2px solid #e9ecef;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.checkbox-item:hover .checkmark {
     border-color: #007bff;
+}
+
+.checkbox-item input:checked ~ .checkmark {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 5px;
+    top: 2px;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-item input:checked ~ .checkmark:after {
+    display: block;
 }
 
 .list-placeholder {
@@ -217,11 +254,16 @@
     .filter-section {
         flex-direction: column;
         align-items: stretch;
+        gap: 1.5rem;
     }
     
-    .search-bar,
-    .filter-options {
+    .search-bar {
         min-width: auto;
+    }
+    
+    .filter-checkboxes {
+        justify-content: flex-start;
+        gap: 0.75rem;
     }
     
     .list-controls {
@@ -251,5 +293,11 @@
     
     .list-placeholder-content h2 {
         font-size: 1.5rem;
+    }
+    
+    .filter-checkboxes {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 } 

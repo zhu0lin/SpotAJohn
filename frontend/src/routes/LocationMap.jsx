@@ -65,7 +65,8 @@ export default function LocationMap() {
         try {
             setLoading(true);
             console.log('Fetching locations from backend...');
-            const response = await fetch('http://localhost:3000/api/locations');
+            const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            const response = await fetch(`${apiBaseUrl}/api/locations`);
             const data = await response.json();
             
             console.log('Received locations data:', data.success ? data.data.length : 'failed');
@@ -180,7 +181,7 @@ export default function LocationMap() {
             {/* Main Content */}
             <main className="location-map-main">
                 <div className="map-header">
-                    <h1>🗺️ Location Map</h1>
+                    <h1>Location Map</h1>
                     <p>Find and explore bathroom locations near you</p>
                 </div>
 
@@ -198,6 +199,14 @@ export default function LocationMap() {
                 {locations.length > 0 && (
                     <div className="location-count">
                         Found {locations.length} location{locations.length !== 1 ? 's' : ''} nearby
+                        <div className="back-dashboard-wrapper">
+                            <button
+                                className="back-dashboard-btn"
+                                onClick={() => navigate('/home')}
+                            >
+                                 Back to Dashboard
+                            </button>
+                        </div>
                     </div>
                 )}
             </main>

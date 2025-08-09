@@ -1,4 +1,5 @@
 /* React imports */
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /* Asset imports */
@@ -9,6 +10,12 @@ import '../styles/components/Header.css';
 
 export default function Header({ userName, showProfileButton = true, showBackButton = false, backButtonPath = "/home" }) {
     const navigate = useNavigate();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const closeMenuAnd = (fn) => () => {
+        setIsMenuOpen(false);
+        fn();
+    };
 
     const handleLogout = async () => {
         try {
@@ -32,18 +39,29 @@ export default function Header({ userName, showProfileButton = true, showBackBut
                 </div>
             </div>
             <div className="header-right">
+                {/* Mobile: Hamburger */}
+                <button
+                    className="hamburger-btn"
+                    aria-label="Menu"
+                    onClick={() => setIsMenuOpen((v) => !v)}
+                >
+                    <span className="hamburger-bar" />
+                    <span className="hamburger-bar" />
+                    <span className="hamburger-bar" />
+                </button>
+
                 <div className="header-actions">
                     <button
                         onClick={() => navigate('/location-map')}
                         className="nav-btn"
                     >
-                        🗺️ Map
+                         View Map
                     </button>
                     <button
                         onClick={() => navigate('/location-list')}
                         className="nav-btn"
                     >
-                        📋 List
+                         View List
                     </button>
                     {showProfileButton && (
                         <button
@@ -64,6 +82,27 @@ export default function Header({ userName, showProfileButton = true, showBackBut
                         Logout
                     </button>
                 </div>
+
+                {/* Mobile dropdown menu */}
+                {isMenuOpen && (
+                    <div className="mobile-menu" role="menu">
+                        <button className="mobile-menu-item" role="menuitem" onClick={closeMenuAnd(() => navigate('/location-map'))}>
+                             View Map
+                        </button>
+                        <button className="mobile-menu-item" role="menuitem" onClick={closeMenuAnd(() => navigate('/location-list'))}>
+                             View List
+                        </button>
+                        {showProfileButton && (
+                            <button className="mobile-menu-item" role="menuitem" onClick={closeMenuAnd(() => navigate('/profile'))}>
+                                 Profile
+                            </button>
+                        )}
+                        <div className="mobile-menu-separator" />
+                        <button className="mobile-menu-item" role="menuitem" onClick={closeMenuAnd(handleLogout)}>
+                            ↪ Logout
+                        </button>
+                    </div>
+                )}
             </div>
         </header>
     );

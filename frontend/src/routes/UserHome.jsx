@@ -86,7 +86,7 @@ export default function UserHome() {
                                 className="map-btn"
                                 onClick={() => navigate('/location-map')}
                             >
-                                🗺️ Open Map
+                                Open Map
                             </button>
                         </div>
                     </div>
@@ -99,7 +99,7 @@ export default function UserHome() {
                                 className="list-btn"
                                 onClick={() => navigate('/location-list')}
                             >
-                                📋 View Location List
+                                View Location List
                             </button>
                         </div>
                     </div>

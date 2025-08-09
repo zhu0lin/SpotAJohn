@@ -63,9 +63,17 @@
         flex-direction: column;
         gap: 0.5rem;
         font-size: 1rem;
-        align-items: flex-start;
+        align-items: center; 
+        text-align: center;
     }
     .footerLogo {
         font-size: 1.3rem;
+    }
+    .footerCopyright,
+    .footerLocation {
+        width: 100%;
+        text-align: center;
+        display: block;
+        margin: 0 auto;
     }
 } 

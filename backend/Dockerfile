@@ -8,13 +8,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN npm install --omit=dev
 
 # Copy source code
 COPY . .
 
-# Expose port
-EXPOSE 3001
+# Expose port expected by Cloud Run (informational)
+EXPOSE 8080
 
-# Start the app
-CMD ["npm", "run", "dev"] 
+# Start the app (production)
+CMD ["npm", "start"]

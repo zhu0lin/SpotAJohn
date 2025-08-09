@@ -3,6 +3,7 @@
     display: flex;
     flex-direction: column;
     background-color: #f8f9fa;
+    overflow-x: hidden;
 }
 
 
@@ -13,6 +14,7 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .map-header {
@@ -90,6 +92,25 @@
     border-radius: 8px;
     font-weight: 500;
     margin-bottom: 1rem;
+}
+
+.back-dashboard-wrapper {
+    margin-top: 0.5rem;
+}
+
+.back-dashboard-btn {
+    margin-top: 0.5rem;
+    background: none;
+    border: 1px solid #28A745;
+    color: #28A745;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.back-dashboard-btn:hover {
+    background: #28A745;
+    color: #fff;
 }
 
 /* Google Maps Info Window Styles */
@@ -265,6 +286,22 @@
 @media (max-width: 768px) {
     .location-map-main {
         padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 0 auto;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .map-header,
+    .map-container,
+    .location-count {
+        width: 100%;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
     }
     
     .map-header h1 {
@@ -300,6 +337,17 @@
 }
 
 @media (max-width: 480px) {
+    .location-map-main {
+        padding: 1rem;
+    }
+
+    .map-header,
+    .map-container,
+    .location-count {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
     .map-header h1 {
         font-size: 1.8rem;
     }

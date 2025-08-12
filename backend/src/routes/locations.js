@@ -16,6 +16,17 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching locations:', error);
+    
+    // Handle specific quota exceeded error
+    if (error.message && error.message.includes('RESOURCE_EXHAUSTED')) {
+      return res.status(429).json({
+        success: false,
+        error: 'Firebase quota exceeded. Please try again later or upgrade your plan.',
+        details: 'The free tier limit has been reached. Consider upgrading to Blaze plan or wait for quota reset.',
+        code: 'QUOTA_EXCEEDED'
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to fetch locations'
@@ -69,6 +80,40 @@ router.get('/stats', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch location statistics'
+    });
+  }
+});
+
+// GET /api/locations/cache-status - Get cache status and statistics
+router.get('/cache-status', async (req, res) => {
+  try {
+    const cacheStats = firestoreService.getCacheStats();
+    res.json({
+      success: true,
+      data: cacheStats
+    });
+  } catch (error) {
+    console.error('Error fetching cache status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch cache status'
+    });
+  }
+});
+
+// POST /api/locations/clear-cache - Manually clear the cache
+router.post('/clear-cache', async (req, res) => {
+  try {
+    firestoreService.clearCache();
+    res.json({
+      success: true,
+      message: 'Cache cleared successfully'
+    });
+  } catch (error) {
+    console.error('Error clearing cache:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to clear cache'
     });
   }
 });

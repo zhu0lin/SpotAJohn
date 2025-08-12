@@ -3,6 +3,22 @@ import { db } from '../config/firebase.js';
 class FirestoreService {
   constructor() {
     this.collectionName = 'locations';
+    this.cache = new Map();
+    this.cacheExpiry = 5 * 60 * 1000; // 5 minutes
+  }
+
+  // Get cache key for locations
+  getCacheKey() {
+    return `all_locations_${this.collectionName}`;
+  }
+
+  // Check if cache is valid
+  isCacheValid(cacheKey) {
+    const cached = this.cache.get(cacheKey);
+    if (!cached) return false;
+    
+    const now = Date.now();
+    return (now - cached.timestamp) < this.cacheExpiry;
   }
 
   // Store locations in Firestore
@@ -28,6 +44,10 @@ class FirestoreService {
       });
 
       await batch.commit();
+      
+      // Clear cache after storing new data
+      this.clearCache();
+      
       console.log(`Successfully stored ${locations.length} locations in Firestore`);
       return { success: true, count: locations.length };
     } catch (error) {
@@ -36,9 +56,45 @@ class FirestoreService {
     }
   }
 
-  // Get all locations from Firestore
+  // Clear the cache
+  clearCache() {
+    this.cache.clear();
+    console.log('Cache cleared');
+  }
+
+  // Get cache statistics
+  getCacheStats() {
+    const cacheKey = this.getCacheKey();
+    const cached = this.cache.get(cacheKey);
+    
+    if (!cached) {
+      return { hasCache: false, age: null, count: 0 };
+    }
+    
+    const age = Date.now() - cached.timestamp;
+    const isValid = age < this.cacheExpiry;
+    
+    return {
+      hasCache: true,
+      age: age,
+      isValid: isValid,
+      count: cached.data.length,
+      expiresIn: Math.max(0, this.cacheExpiry - age)
+    };
+  }
+
+  // Get all locations from Firestore with caching
   async getAllLocations() {
     try {
+      const cacheKey = this.getCacheKey();
+      
+      // Check cache first
+      if (this.isCacheValid(cacheKey)) {
+        console.log('Returning locations from cache');
+        return this.cache.get(cacheKey).data;
+      }
+
+      console.log('Fetching locations from Firestore...');
       const snapshot = await db.collection(this.collectionName).get();
       const locations = [];
       
@@ -49,9 +105,25 @@ class FirestoreService {
         });
       });
 
+      // Store in cache
+      this.cache.set(cacheKey, {
+        data: locations,
+        timestamp: Date.now()
+      });
+
+      console.log(`Successfully fetched ${locations.length} locations from Firestore`);
       return locations;
     } catch (error) {
       console.error('Error fetching locations from Firestore:', error);
+      
+      // Try to return cached data if available (even if expired)
+      const cacheKey = this.getCacheKey();
+      const cached = this.cache.get(cacheKey);
+      if (cached && cached.data.length > 0) {
+        console.log('Returning stale cached data due to Firestore error');
+        return cached.data;
+      }
+      
       throw error;
     }
   }
@@ -60,8 +132,7 @@ class FirestoreService {
   async getLocationsNearby(lat, lng, radiusKm = 10) {
     try {
       // Note: Firestore doesn't support native geospatial queries
-      // This is a simplified approach - in production, you might want to use
-      // a geospatial library or implement a more sophisticated query
+
       const allLocations = await this.getAllLocations();
       
       return allLocations.filter(location => {

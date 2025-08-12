@@ -209,6 +209,23 @@
     line-height: 1.4;
 }
 
+.address-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid transparent;
+}
+
+.address-link:hover {
+    color: #0056b3;
+    border-bottom-color: #0056b3;
+    text-decoration: none;
+}
+
+.address-link:active {
+    color: #004085;
+}
+
 .location-features {
     display: flex;
     flex-wrap: wrap;
@@ -217,12 +234,20 @@
 }
 
 .feature-tag {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 500;
     color: white;
+}
+
+.feature-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 .feature-tag.accessibility {
@@ -350,6 +375,75 @@
     font-size: 1.1rem;
 }
 
+.troubleshooting {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.troubleshooting h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.troubleshooting ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #6c757d;
+}
+
+.troubleshooting li {
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.troubleshooting.quota-error {
+    background-color: #fff3cd;
+    border-color: #ffeaa7;
+    border-left: 4px solid #f39c12;
+}
+
+.troubleshooting.quota-error h3 {
+    color: #856404;
+}
+
+.troubleshooting.quota-error p {
+    color: #856404;
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.quota-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.quota-link {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #f39c12;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.quota-link:hover {
+    background-color: #e67e22;
+    transform: translateY(-1px);
+    text-decoration: none;
+    color: white;
+}
+
 .retry-btn {
     background-color: #007bff;
     color: white;
@@ -466,6 +560,128 @@
     .no-results,
     .error-container {
         padding: 2rem;
+    }
+}
+
+/* Scroll to Top Button */
+.scroll-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.scroll-to-top-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.scroll-to-top-btn:active {
+    transform: translateY(0);
+}
+
+.scroll-to-top-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* Blur Animation for Scroll to Top */
+.locations-grid.scrolling-to-top {
+    animation: blurScrollEffect 0.8s ease-in-out;
+}
+
+@keyframes blurScrollEffect {
+    0% {
+        filter: blur(0px);
+        transform: scale(1);
+    }
+    25% {
+        filter: blur(2px);
+        transform: scale(0.98);
+    }
+    50% {
+        filter: blur(4px);
+        transform: scale(0.95);
+    }
+    75% {
+        filter: blur(2px);
+        transform: scale(0.98);
+    }
+    100% {
+        filter: blur(0px);
+        transform: scale(1);
+    }
+}
+
+/* Enhanced location card animation during scroll */
+.locations-grid.scrolling-to-top .location-card {
+    transition: all 0.3s ease;
+}
+
+.locations-grid.scrolling-to-top .location-card:nth-child(odd) {
+    animation: cardBlurOdd 0.8s ease-in-out;
+}
+
+.locations-grid.scrolling-to-top .location-card:nth-child(even) {
+    animation: cardBlurEven 0.8s ease-in-out;
+}
+
+@keyframes cardBlurOdd {
+    0%, 100% {
+        filter: blur(0px);
+        transform: translateX(0) scale(1);
+    }
+    50% {
+        filter: blur(3px);
+        transform: translateX(-5px) scale(0.97);
+    }
+}
+
+@keyframes cardBlurEven {
+    0%, 100% {
+        filter: blur(0px);
+        transform: translateX(0) scale(1);
+    }
+    50% {
+        filter: blur(3px);
+        transform: translateX(5px) scale(0.97);
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .scroll-to-top-btn {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 45px;
+        height: 45px;
+    }
+    
+    .scroll-to-top-icon {
+        width: 20px;
+        height: 20px;
     }
 }
 

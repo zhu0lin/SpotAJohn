@@ -3,6 +3,9 @@
     display: flex;
     flex-direction: column;
     background-color: #f8f9fa;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
 }
 
 /* Main Content Styles */
@@ -12,6 +15,7 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .list-header {
@@ -41,31 +45,49 @@
 
 /* Filter Section */
 .filter-section {
-    background: white;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #f0f9f0 0%, #e8f5e8 100%);
+    /* border: 2px solid; */
+    /* border-radius: 12px; */
     padding: 2rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.filter-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
 }
 
 .search-bar {
     width: 100%;
+    max-width: 500px;
 }
 
 .search-input {
     width: 100%;
     padding: 12px 16px;
-    border: 2px solid #e9ecef;
+    border: 2px solid #FED592;
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
+    background: white;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.1);
 }
 
 .search-input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: #28a745;
+    box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.3);
+    transform: translateY(-1px);
 }
 
 .filter-checkboxes {
@@ -73,6 +95,8 @@
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 .checkbox-item {
@@ -83,6 +107,9 @@
     font-size: 0.9rem;
     color: #333;
     user-select: none;
+    justify-content: center;
+    min-width: 0;
+    flex-shrink: 0;
 }
 
 .checkbox-item input[type="checkbox"] {
@@ -102,12 +129,14 @@
 }
 
 .checkbox-item:hover .checkmark {
-    border-color: #007bff;
+    border-color: #28a745;
+    transform: scale(1.05);
 }
 
 .checkbox-item input:checked ~ .checkmark {
-    background-color: #007bff;
-    border-color: #007bff;
+    background: #28a745;
+    border-color: #28a745;
+    transform: scale(1.1);
 }
 
 .checkmark:after {
@@ -514,41 +543,88 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .location-list-container {
+        overflow-x: hidden;
+        width: 100%;
+    }
+    
     .location-list-main {
-        padding: 1rem 1.5rem;
+        padding: 1rem;
+        max-width: 100%;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .list-header h1 {
         font-size: 2rem;
+        text-align: center;
+    }
+    
+    .list-header p {
+        text-align: center;
     }
     
     .locations-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
+        width: 100%;
+        max-width: 100%;
     }
     
     .location-card {
         padding: 1.25rem;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto;
     }
     
     .filter-section {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
         gap: 1.5rem;
+        padding: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
     }
     
     .search-bar {
+        width: 100%;
+        max-width: 100%;
         min-width: auto;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .search-input {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
     }
     
     .filter-checkboxes {
-        justify-content: flex-start;
-        gap: 0.75rem;
+        justify-content: center;
+        gap: 1rem;
+        width: 100%;
+        flex-wrap: wrap;
+        display: flex;
+        align-items: center;
+    }
+    
+    .checkbox-item {
+        min-width: 0;
+        flex-shrink: 0;
+        justify-content: center;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
     
     .list-controls {
         flex-direction: column;
         align-items: center;
+        width: 100%;
     }
     
     .control-btn {
@@ -560,6 +636,20 @@
     .no-results,
     .error-container {
         padding: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .results-summary {
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    
+    .list-content {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -686,36 +776,110 @@
 }
 
 @media (max-width: 480px) {
+    .location-list-container {
+        overflow-x: hidden;
+        width: 100vw;
+    }
+    
     .location-list-main {
-        padding: 1rem 1rem;
+        padding: 0.75rem;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
     
     .list-header h1 {
         font-size: 1.8rem;
+        text-align: center;
+        padding: 0 0.5rem;
+    }
+    
+    .list-header p {
+        text-align: center;
+        padding: 0 0.5rem;
     }
     
     .location-card {
         padding: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto;
     }
     
     .location-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;
+        width: 100%;
     }
     
     .location-rating {
         align-self: flex-start;
     }
     
+    .filter-section {
+        padding: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto;
+        text-align: center;
+        align-items: center;
+    }
+    
+    .search-bar {
+        width: 100%;
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .search-input {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px; /* Prevents zoom on iOS */
+        text-align: center;
+    }
+    
     .filter-checkboxes {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        justify-content: center;
+        display: flex;
+    }
+    
+    .checkbox-item {
+        width: 100%;
+        justify-content: flex-start;
+        text-align: left;
+        display: flex;
+        align-items: center;
         gap: 0.5rem;
+        flex-direction: row;
+        max-width: 200px;
+        margin: 0 auto;
     }
     
     .no-results,
     .error-container {
         padding: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+        margin: 0 auto;
+    }
+    
+    .locations-grid {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0 auto;
+    }
+    
+    .list-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0 auto;
     }
 } 

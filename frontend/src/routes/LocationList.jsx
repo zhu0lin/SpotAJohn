@@ -47,8 +47,11 @@ export default function LocationList() {
 
     // Filter locations when search query or filters change
     useEffect(() => {
-        filterLocations();
-    }, [searchQuery, filters, locations]);
+        // Only apply filters if there's no active search
+        if (!searchQuery.trim()) {
+            filterLocations();
+        }
+    }, [filters, locations]);
 
     // Debounced search effect
     useEffect(() => {
@@ -56,7 +59,9 @@ export default function LocationList() {
             if (searchQuery.trim()) {
                 performSearch();
             } else {
+                // Clear search results and show all locations with filters applied
                 setFilteredLocations(locations);
+                filterLocations();
             }
         }, 300);
 
@@ -189,6 +194,7 @@ export default function LocationList() {
             
             const data = await response.json();
             if (data.success) {
+                // Set search results directly without applying filters
                 setFilteredLocations(data.data || []);
             } else {
                 throw new Error(data.error || 'Search failed');
@@ -196,15 +202,20 @@ export default function LocationList() {
         } catch (error) {
             console.error('Search error:', error);
             // Fallback to client-side search
-            filterLocations();
+            const filtered = locations.filter(location => 
+                location.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                location.address?.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+            setFilteredLocations(filtered);
         }
     };
 
     const filterLocations = () => {
         let filtered = [...locations];
 
-        // Apply search filter (only if not using backend search)
-        if (searchQuery.trim() && !filteredLocations.length) {
+        // Don't apply search filter if we have search results from backend
+        // Only apply search filter if we're doing client-side fallback
+        if (searchQuery.trim() && filteredLocations.length === locations.length) {
             filtered = filtered.filter(location => 
                 location.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 location.address?.toLowerCase().includes(searchQuery.toLowerCase())

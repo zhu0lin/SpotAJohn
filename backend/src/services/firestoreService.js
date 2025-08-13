@@ -94,7 +94,7 @@ class FirestoreService {
         return this.cache.get(cacheKey).data;
       }
 
-      console.log('Fetching locations from Firestore...');
+      console.log('Fetching locations from Firestore');
       const snapshot = await db.collection(this.collectionName).get();
       const locations = [];
       

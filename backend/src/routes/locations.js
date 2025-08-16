@@ -135,10 +135,64 @@ router.get('/filter-options', async (req, res) => {
   }
 });
 
-// Search locations by name
-// GET /api/locations/search?q=searchTerm
-// Returns locations whose names match the search term
-// Handles case-insensitive search with space/punctuation normalization
+
+
+
+
+
+
+// POST /api/locations/update - Manually trigger location update
+router.post('/update', async (req, res) => {
+  try {
+    await cronService.triggerLocationUpdate();
+    res.json({
+      success: true,
+      message: 'Location update triggered successfully'
+    });
+  } catch (error) {
+    console.error('Error triggering location update:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to trigger location update'
+    });
+  }
+});
+
+// POST /api/locations/cleanup - Manually trigger data cleanup
+router.post('/cleanup', async (req, res) => {
+  try {
+    await cronService.triggerDataCleanup();
+    res.json({
+      success: true,
+      message: 'Data cleanup triggered successfully'
+    });
+  } catch (error) {
+    console.error('Error triggering data cleanup:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to trigger data cleanup'
+    });
+  }
+});
+
+// GET /api/locations/cron/status - Get cron job status
+router.get('/cron/status', async (req, res) => {
+  try {
+    const status = cronService.getJobStatus();
+    res.json({
+      success: true,
+      data: status
+    });
+  } catch (error) {
+    console.error('Error fetching cron status:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch cron status'
+    });
+  }
+});
+
+// GET /api/locations/search - Search locations by name (MUST be before /:id route)
 router.get('/search', async (req, res) => {
   try {
     const { q } = req.query;
@@ -164,14 +218,7 @@ router.get('/search', async (req, res) => {
   }
 });
 
-// TODO: Implement filter locations route  
-// GET /api/locations/filter?accessibility=true&minRating=4.0&babyChanging=true
-// This route should:
-// 1. Extract filter parameters from req.query
-// 2. Validate that at least one filter is provided
-// 3. Call locationService.filterLocations()
-// 4. Return results with proper error handling
-// 5. Consider adding pagination if needed
+// GET /api/locations/filter - Filter locations by criteria (MUST be before /:id route)
 router.get('/filter', async (req, res) => {
   try {
     const filters = {};
@@ -238,14 +285,7 @@ router.get('/filter', async (req, res) => {
   }
 });
 
-// TODO: Implement combined search and filter route
-// GET /api/locations/search-filter?q=searchTerm&accessibility=true&minRating=4.0
-// This route should:
-// 1. Extract both search term and filters from req.query
-// 2. Validate that at least search term OR filters are provided
-// 3. Call locationService.searchAndFilterLocations()
-// 4. Return results with proper error handling
-// 5. Consider adding pagination if needed
+// GET /api/locations/search-filter - Combined search and filter (MUST be before /:id route)
 router.get('/search-filter', async (req, res) => {
   try {
     const { q: searchTerm, ...filterParams } = req.query;
@@ -313,57 +353,6 @@ router.get('/search-filter', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to search and filter locations'
-    });
-  }
-});
-
-// POST /api/locations/update - Manually trigger location update
-router.post('/update', async (req, res) => {
-  try {
-    await cronService.triggerLocationUpdate();
-    res.json({
-      success: true,
-      message: 'Location update triggered successfully'
-    });
-  } catch (error) {
-    console.error('Error triggering location update:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to trigger location update'
-    });
-  }
-});
-
-// POST /api/locations/cleanup - Manually trigger data cleanup
-router.post('/cleanup', async (req, res) => {
-  try {
-    await cronService.triggerDataCleanup();
-    res.json({
-      success: true,
-      message: 'Data cleanup triggered successfully'
-    });
-  } catch (error) {
-    console.error('Error triggering data cleanup:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to trigger data cleanup'
-    });
-  }
-});
-
-// GET /api/locations/cron/status - Get cron job status
-router.get('/cron/status', async (req, res) => {
-  try {
-    const status = cronService.getJobStatus();
-    res.json({
-      success: true,
-      data: status
-    });
-  } catch (error) {
-    console.error('Error fetching cron status:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch cron status'
     });
   }
 });

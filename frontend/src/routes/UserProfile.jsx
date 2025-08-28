@@ -30,6 +30,8 @@ export default function UserProfile({ user }) {
         }
     }, [user]);
 
+
+
     const handleUpdateProfile = async () => {
         if (!displayName.trim()) {
             setError('Display name cannot be empty');
@@ -196,18 +198,9 @@ export default function UserProfile({ user }) {
                         </div>
                     </div>
 
-                    {/* Account Actions */}
-                    <div className="profile-section">
-                        <h2>Account Actions</h2>
-                        <div className="action-buttons">
-                            <button
-                                onClick={() => navigate('/home')}
-                                className="dashboard-btn"
-                            >
-                                Back to Dashboard
-                            </button>
-                        </div>
-                    </div>
+
+
+
                 </div>
             </main>
 

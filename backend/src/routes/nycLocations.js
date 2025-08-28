@@ -4,6 +4,26 @@ import firestoreService from '../services/firestoreService.js';
 
 const router = express.Router();
 
+// Get all NYC locations (root endpoint)
+router.get('/', async (req, res) => {
+  try {
+    const locations = await firestoreService.getAllLocations();
+    const nycLocations = locations.filter(loc => loc.source === 'nyc_open_data');
+    
+    res.json({
+      success: true,
+      data: nycLocations
+    });
+  } catch (error) {
+    console.error('Error getting NYC locations:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get NYC locations',
+      error: error.message
+    });
+  }
+});
+
 // Import NYC locations into Firestore
 router.post('/import', async (req, res) => {
   try {

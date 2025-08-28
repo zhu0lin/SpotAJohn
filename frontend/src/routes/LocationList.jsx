@@ -1,6 +1,7 @@
 /* React imports */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
 
 /* Component imports */
 import Header from "../components/Header";
@@ -28,6 +29,8 @@ export default function LocationList() {
     });
     const [showScrollToTop, setShowScrollToTop] = useState(false);
     const [isScrollingToTop, setIsScrollingToTop] = useState(false);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [showDetailsModal, setShowDetailsModal] = useState(false);
 
     // Test backend connectivity
     const testBackendConnection = async () => {
@@ -73,7 +76,7 @@ export default function LocationList() {
         const handleScroll = () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
             const shouldShow = scrollTop > 50;
-            
+
             setShowScrollToTop(shouldShow);
         };
 
@@ -81,7 +84,7 @@ export default function LocationList() {
         window.addEventListener('scroll', handleScroll, { passive: true });
         document.addEventListener('scroll', handleScroll, { passive: true });
         document.documentElement.addEventListener('scroll', handleScroll, { passive: true });
-        
+
         // Method 2: Timer-based check as backup
         const scrollCheckInterval = setInterval(() => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
@@ -90,10 +93,10 @@ export default function LocationList() {
                 setShowScrollToTop(shouldShow);
             }
         }, 100);
-        
+
         // Check on mount
         handleScroll();
-        
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
             document.removeEventListener('scroll', handleScroll);
@@ -104,10 +107,10 @@ export default function LocationList() {
 
     const scrollToTop = () => {
         const currentScroll = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
-        
+
         // Start blur animation
         setIsScrollingToTop(true);
-        
+
         // Try multiple scrolling methods
         try {
             // Method 1: Smooth scroll to top
@@ -115,20 +118,20 @@ export default function LocationList() {
                 top: 0,
                 behavior: 'smooth'
             });
-            
+
             // Method 2: Also try scrolling the document element
             document.documentElement.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
-            
+
             // Method 3: Fallback to instant scroll
             setTimeout(() => {
                 window.scrollTo(0, 0);
                 document.documentElement.scrollTop = 0;
                 document.body.scrollTop = 0;
             }, 100);
-            
+
         } catch (error) {
             console.error('Error scrolling to top:', error);
             // Fallback: instant scroll
@@ -136,7 +139,7 @@ export default function LocationList() {
             document.documentElement.scrollTop = 0;
             document.body.scrollTop = 0;
         }
-        
+
         // End blur animation after scroll completes
         setTimeout(() => {
             setIsScrollingToTop(false);
@@ -147,26 +150,26 @@ export default function LocationList() {
         try {
             setLoading(true);
             setError(null);
-            
+
             // First test if backend is reachable
             const isBackendReachable = await testBackendConnection();
             if (!isBackendReachable) {
                 throw new Error('Backend server is not reachable. Please check if the backend is running.');
             }
-            
+
             const apiUrl = `${config.backend.baseURL}${config.backend.endpoints.locations}`;
-            
+
             // Fetch from your backend API
             const response = await fetch(apiUrl);
-            
+
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('Response not ok. Status:', response.status, 'Text:', errorText);
                 throw new Error(`Failed to fetch locations: ${response.status} ${response.statusText}`);
             }
-            
+
             const data = await response.json();
-            
+
             if (data.success) {
                 setLocations(data.data || []);
             } else {
@@ -191,7 +194,7 @@ export default function LocationList() {
             if (!response.ok) {
                 throw new Error('Search failed');
             }
-            
+
             const data = await response.json();
             if (data.success) {
                 // Set search results directly without applying filters
@@ -202,7 +205,7 @@ export default function LocationList() {
         } catch (error) {
             console.error('Search error:', error);
             // Fallback to client-side search
-            const filtered = locations.filter(location => 
+            const filtered = locations.filter(location =>
                 location.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 location.address?.toLowerCase().includes(searchQuery.toLowerCase())
             );
@@ -216,7 +219,7 @@ export default function LocationList() {
         // Don't apply search filter if we have search results from backend
         // Only apply search filter if we're doing client-side fallback
         if (searchQuery.trim() && filteredLocations.length === locations.length) {
-            filtered = filtered.filter(location => 
+            filtered = filtered.filter(location =>
                 location.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 location.address?.toLowerCase().includes(searchQuery.toLowerCase())
             );
@@ -251,6 +254,54 @@ export default function LocationList() {
         // navigate(`/location/${locationId}`);
     };
 
+    const addToMyLocations = async (location) => {
+        console.log('Frontend: Starting addToMyLocations...');
+        console.log('Current user:', auth.currentUser ? auth.currentUser.uid : 'Not logged in');
+
+        if (!auth.currentUser) {
+            throw new Error('You must be logged in to save locations');
+        }
+
+        try {
+            const apiBaseUrl = config.backend.baseURL;
+            console.log('API URL:', apiBaseUrl);
+
+            const token = await auth.currentUser.getIdToken();
+            console.log('Token received (first 20 chars):', token.substring(0, 20) + '...');
+
+            const requestBody = {
+                locationId: location.id,
+                locationData: location
+            };
+            console.log('Request body:', requestBody);
+
+            const response = await fetch(`${apiBaseUrl}${config.backend.endpoints.userLocations}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            console.log('Response status:', response.status);
+            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.log('Response not OK, error data:', errorData);
+                throw new Error(errorData.error || 'Failed to add location');
+            }
+
+            const data = await response.json();
+            console.log('Success response:', data);
+            return data;
+        } catch (error) {
+            console.error('Error adding location to user profile:', error);
+            throw error;
+        }
+    };
+
     useEffect(() => {
         document.title = 'Spot a John - List';
     }, []);
@@ -258,8 +309,8 @@ export default function LocationList() {
     if (loading) {
         return (
             <div className="location-list-container">
-                <Header 
-                    userName="User" 
+                <Header
+                    userName="User"
                     showBackButton={true}
                     backButtonText="Back to Dashboard"
                     backButtonPath="/home"
@@ -278,8 +329,8 @@ export default function LocationList() {
     if (error) {
         return (
             <div className="location-list-container">
-                <Header 
-                    userName="User" 
+                <Header
+                    userName="User"
                     showBackButton={true}
                     backButtonText="Back to Dashboard"
                     backButtonPath="/home"
@@ -288,7 +339,7 @@ export default function LocationList() {
                     <div className="error-container">
                         <h2>Error Loading Locations</h2>
                         <p>{error}</p>
-                        
+
                         {error.includes('Backend server is not reachable') && (
                             <div className="troubleshooting">
                                 <h3>Troubleshooting Steps:</h3>
@@ -300,7 +351,7 @@ export default function LocationList() {
                                 </ul>
                             </div>
                         )}
-                        
+
                         {error.includes('quota exceeded') && (
                             <div className="troubleshooting quota-error">
                                 <h3>Firebase Quota Exceeded</h3>
@@ -311,17 +362,17 @@ export default function LocationList() {
                                     <li><strong>Current Status:</strong> Using cached data if available</li>
                                 </ul>
                                 <div className="quota-actions">
-                                    <a 
-                                        href="https://console.firebase.google.com/project/_/usage" 
-                                        target="_blank" 
+                                    <a
+                                        href="https://console.firebase.google.com/project/_/usage"
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="quota-link"
                                     >
                                         Check Firebase Usage
                                     </a>
-                                    <a 
-                                        href="https://firebase.google.com/pricing" 
-                                        target="_blank" 
+                                    <a
+                                        href="https://firebase.google.com/pricing"
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="quota-link"
                                     >
@@ -330,7 +381,7 @@ export default function LocationList() {
                                 </div>
                             </div>
                         )}
-                        
+
                         <button onClick={fetchLocations} className="retry-btn">
                             Try Again
                         </button>
@@ -344,8 +395,8 @@ export default function LocationList() {
     return (
         <div className="location-list-container">
             {/* Header */}
-            <Header 
-                userName="User" 
+            <Header
+                userName="User"
                 showBackButton={true}
                 backButtonText="Back to Dashboard"
                 backButtonPath="/home"
@@ -421,8 +472,8 @@ export default function LocationList() {
                     {filteredLocations.length > 0 ? (
                         <div className={`locations-grid ${isScrollingToTop ? 'scrolling-to-top' : ''}`}>
                             {filteredLocations.map((location) => (
-                                <div 
-                                    key={location.id} 
+                                <div
+                                    key={location.id}
                                     className="location-card"
                                     onClick={() => handleLocationClick(location.id)}
                                 >
@@ -436,9 +487,9 @@ export default function LocationList() {
                                             <span className="rating-number">({location.rating?.toFixed(1) || 'N/A'})</span>
                                         </div>
                                     </div>
-                                    
+
                                     <p className="location-address">
-                                        <a 
+                                        <a
                                             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
@@ -448,12 +499,12 @@ export default function LocationList() {
                                             {location.address}
                                         </a>
                                     </p>
-                                    
+
                                     <div className="location-features">
                                         {location.accessibility && (
                                             <span className="feature-tag accessibility">
                                                 <svg className="feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M7 4A2 2 0 0 1 9 6A2 2 0 0 1 7 8A2 2 0 0 1 5 6A2 2 0 0 1 7 4M12 15C10.9 15 10 15.9 10 17C10 18.1 10.9 19 12 19C13.1 19 14 18.1 14 17C14 15.9 13.1 15 12 15M7 10C5.9 10 5 10.9 5 12C5 13.1 5.9 14 7 14C8.1 14 9 13.1 9 12C9 10.9 8.1 10 7 10M7 16C5.9 16 5 16.9 5 18C5 19.1 5.9 20 7 20C8.1 20 9 19.1 9 18C9 16.9 8.1 16 7 16M12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10M12 16C10.9 16 10 16.9 10 18C10 19.1 10.9 20 12 20C13.1 20 14 19.1 14 18C14 16.9 13.1 16 12 16M17 4A2 2 0 0 1 19 6A2 2 0 0 1 17 8A2 2 0 0 1 15 6A2 2 0 0 1 17 4M17 10C15.9 10 15 10.9 15 12C15 13.1 15.9 14 17 14C18.1 14 19 13.1 19 12C19 10.9 18.1 10 17 10M17 16C15.9 16 15 16.9 15 18C15 19.1 15.9 20 17 20C18.1 20 19 19.1 19 18C19 16.9 18.1 16 17 16Z"/>
+                                                    <path d="M7 4A2 2 0 0 1 9 6A2 2 0 0 1 7 8A2 2 0 0 1 5 6A2 2 0 0 1 7 4M12 15C10.9 15 10 15.9 10 17C10 18.1 10.9 19 12 19C13.1 19 14 18.1 14 17C14 15.9 13.1 15 12 15M7 10C5.9 10 5 10.9 5 12C5 13.1 5.9 14 7 14C8.1 14 9 13.1 9 12C9 10.9 8.1 10 7 10M7 16C5.9 16 5 16.9 5 18C5 19.1 5.9 20 7 20C8.1 20 9 19.1 9 18C9 16.9 8.1 16 7 16M12 10C10.9 10 10 10.9 10 12C10 13.1 10.9 14 12 14C13.1 14 14 13.1 14 12C14 10.9 13.1 10 12 10M12 16C10.9 16 10 16.9 10 18C10 19.1 10.9 20 12 20C13.1 20 14 19.1 14 18C14 16.9 13.1 16 12 16M17 4A2 2 0 0 1 19 6A2 2 0 0 1 17 8A2 2 0 0 1 15 6A2 2 0 0 1 17 4M17 10C15.9 10 15 10.9 15 12C15 13.1 15.9 14 17 14C18.1 14 19 13.1 19 12C19 10.9 18.1 10 17 10M17 16C15.9 16 15 16.9 15 18C15 19.1 15.9 20 17 20C18.1 20 19 19.1 19 18C19 16.9 18.1 16 17 16Z" />
                                                 </svg>
                                                 Accessible
                                             </span>
@@ -461,7 +512,7 @@ export default function LocationList() {
                                         {location.babyChanging && (
                                             <span className="feature-tag baby-changing">
                                                 <svg className="feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M18.5 4A2.5 2.5 0 0 1 21 6.5A2.5 2.5 0 0 1 18.5 9A2.5 2.5 0 0 1 16 6.5A2.5 2.5 0 0 1 18.5 4M4.5 20A1.5 1.5 0 0 1 3 18.5A1.5 1.5 0 0 1 4.5 17H11.5A1.5 1.5 0 0 1 13 18.5A1.5 1.5 0 0 1 11.5 20H4.5M16.09 19L14.69 15H11L6 16V7H8V14H10.25L11.5 12.5L12.75 14H15L16.09 19M20 2H4A2 2 0 0 0 2 4V22L6 18H20A2 2 0 0 0 22 16V4A2 2 0 0 0 20 2M20 16H5.17L4 17.17V4H20V16Z"/>
+                                                    <path d="M18.5 4A2.5 2.5 0 0 1 21 6.5A2.5 2.5 0 0 1 18.5 9A2.5 2.5 0 0 1 16 6.5A2.5 2.5 0 0 1 18.5 4M4.5 20A1.5 1.5 0 0 1 3 18.5A1.5 1.5 0 0 1 4.5 17H11.5A1.5 1.5 0 0 1 13 18.5A1.5 1.5 0 0 1 11.5 20H4.5M16.09 19L14.69 15H11L6 16V7H8V14H10.25L11.5 12.5L12.75 14H15L16.09 19M20 2H4A2 2 0 0 0 2 4V22L6 18H20A2 2 0 0 0 22 16V4A2 2 0 0 0 20 2M20 16H5.17L4 17.17V4H20V16Z" />
                                                 </svg>
                                                 Baby Changing
                                             </span>
@@ -469,7 +520,7 @@ export default function LocationList() {
                                         {location.genderNeutral && (
                                             <span className="feature-tag gender-neutral">
                                                 <svg className="feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 0 1 20 12A8 8 0 0 1 12 20A8 8 0 0 1 4 12A8 8 0 0 1 12 4M12 6A6 6 0 0 0 6 12A6 6 0 0 0 12 18A6 6 0 0 0 18 12A6 6 0 0 0 12 6M12 8A4 4 0 0 1 16 12A4 4 0 0 1 12 16A4 4 0 0 1 8 12A4 4 0 0 1 12 8Z"/>
+                                                    <path d="M12 2A10 10 0 0 0 2 12A10 10 0 0 0 12 22A10 10 0 0 0 22 12A10 10 0 0 0 12 2M12 4A8 8 0 0 1 20 12A8 8 0 0 1 12 20A8 8 0 0 1 4 12A8 8 0 0 1 12 4M12 6A6 6 0 0 0 6 12A6 6 0 0 0 12 18A6 6 0 0 0 18 12A6 6 0 0 0 12 6M12 8A4 4 0 0 1 16 12A4 4 0 0 1 12 16A4 4 0 0 1 8 12A4 4 0 0 1 12 8Z" />
                                                 </svg>
                                                 Gender Neutral
                                             </span>
@@ -477,15 +528,24 @@ export default function LocationList() {
                                         {location.cleanliness && (
                                             <span className="feature-tag cleanliness">
                                                 <svg className="feature-icon" viewBox="0 0 24 24" fill="currentColor">
-                                                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2M12 4.5L11.5 7.5L9 8L11.5 8.5L12 11.5L12.5 8.5L15 8L12.5 7.5L12 4.5Z"/>
+                                                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2M12 4.5L11.5 7.5L9 8L11.5 8.5L12 11.5L12.5 8.5L15 8L12.5 7.5L12 4.5Z" />
                                                 </svg>
                                                 Clean: {location.cleanliness.toFixed(1)}/5
                                             </span>
                                         )}
                                     </div>
-                                    
-                                    <div className="location-source">
-                                        <span className="source-tag">{location.source || 'Unknown'}</span>
+
+                                    <div className="location-actions">
+                                        <button
+                                            className="view-details-btn"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setSelectedLocation(location);
+                                                setShowDetailsModal(true);
+                                            }}
+                                        >
+                                            View Details
+                                        </button>
                                     </div>
                                 </div>
                             ))}
@@ -494,14 +554,14 @@ export default function LocationList() {
                         <div className="no-results">
                             <h3>No locations found</h3>
                             <p>
-                                {searchQuery 
-                                    ? `No locations match "${searchQuery}"` 
+                                {searchQuery
+                                    ? `No locations match "${searchQuery}"`
                                     : 'No locations available'
                                 }
                             </p>
                             {searchQuery && (
-                                <button 
-                                    onClick={() => setSearchQuery('')} 
+                                <button
+                                    onClick={() => setSearchQuery('')}
                                     className="clear-search-btn"
                                 >
                                     Clear Search
@@ -514,15 +574,135 @@ export default function LocationList() {
 
             {/* Scroll to Top Button */}
             {showScrollToTop && (
-                <button 
+                <button
                     className="scroll-to-top-btn"
                     onClick={scrollToTop}
                     aria-label="Scroll to top"
                 >
                     <svg className="scroll-to-top-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M7.41 15.41L12 10.83L16.59 15.41L18 14L12 8L6 14L7.41 15.41Z"/>
+                        <path d="M7.41 15.41L12 10.83L16.59 15.41L18 14L12 8L6 14L7.41 15.41Z" />
                     </svg>
                 </button>
+            )}
+
+            {/* Location Details Modal */}
+            {showDetailsModal && selectedLocation && (
+                <div className="modal-overlay" onClick={() => setShowDetailsModal(false)}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h2>{selectedLocation.name}</h2>
+                            <button
+                                className="modal-close-btn"
+                                onClick={() => setShowDetailsModal(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        <div className="modal-body">
+                            <div className="location-detail-section">
+                                <h3>Address</h3>
+                                <p>{selectedLocation.address}</p>
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(selectedLocation.address)}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="directions-link"
+                                >
+                                    Get Directions
+                                </a>
+                            </div>
+
+                            {selectedLocation.source === 'nyc_open_data' ? (
+                                <>
+                                    <div className="location-detail-section">
+                                        <h3>Type & Operator</h3>
+                                        <p><strong>Type:</strong> {selectedLocation.locationType || 'Unknown'}</p>
+                                        <p><strong>Operator:</strong> {selectedLocation.operator || 'Unknown'}</p>
+                                    </div>
+
+                                    {selectedLocation.hoursOfOperation && (
+                                        <div className="location-detail-section">
+                                            <h3>Hours of Operation</h3>
+                                            <p>{selectedLocation.hoursOfOperation}</p>
+                                        </div>
+                                    )}
+
+                                    {selectedLocation.open !== undefined && (
+                                        <div className="location-detail-section">
+                                            <h3>Status</h3>
+                                            <p className={selectedLocation.open ? 'status-open' : 'status-closed'}>
+                                                {selectedLocation.open ? 'Open' : 'Closed'}
+                                            </p>
+                                        </div>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <div className="location-detail-section">
+                                        <h3>Ratings</h3>
+                                        <p><strong>Overall Rating:</strong> {selectedLocation.rating?.toFixed(1) || 'N/A'}/5</p>
+                                        <p><strong>Cleanliness:</strong> {selectedLocation.cleanliness?.toFixed(1) || 'N/A'}/5</p>
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="location-detail-section">
+                                <h3>Features</h3>
+                                <div className="features-grid">
+                                    {selectedLocation.accessibility && (
+                                        <span className="feature-badge accessibility">
+                                            ♿ Wheelchair Accessible
+                                        </span>
+                                    )}
+                                    {selectedLocation.babyChanging && (
+                                        <span className="feature-badge baby-changing">
+                                            👶 Baby Changing Station
+                                        </span>
+                                    )}
+                                    {selectedLocation.genderNeutral && (
+                                        <span className="feature-badge gender-neutral">
+                                            👤 Gender Neutral
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="location-detail-section">
+                                <h3>Source</h3>
+                                <p className="source-info">
+                                    {selectedLocation.source === 'nyc_open_data'
+                                        ? 'Data provided by NYC Open Data'
+                                        : 'User-submitted location'
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="modal-footer">
+                            <button
+                                className="add-to-locations-btn"
+                                onClick={async () => {
+                                    try {
+                                        await addToMyLocations(selectedLocation);
+                                        alert('Location added to your saved locations!');
+                                    } catch (error) {
+                                        console.error('Error adding location:', error);
+                                        alert('Failed to add location. Please try again.');
+                                    }
+                                }}
+                            >
+                                Add to My Locations
+                            </button>
+                            <button
+                                className="modal-close-btn-secondary"
+                                onClick={() => setShowDetailsModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             <Footer />

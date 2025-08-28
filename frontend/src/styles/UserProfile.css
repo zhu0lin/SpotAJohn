@@ -272,21 +272,111 @@
     background: #c82333;
 }
 
-/* Account Actions */
-.action-buttons {
-    display: flex;
+
+
+/* Saved Locations */
+.saved-locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
-    flex-wrap: wrap;
+    margin-top: 1rem;
 }
 
-.action-buttons button {
+.saved-location-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
 }
 
-.action-buttons button:hover {
-    transform: translateY(-1px);
+.saved-location-card:hover {
+    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
+
+.saved-location-card .location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.saved-location-card .location-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.remove-location-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-location-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.saved-location-card .location-address {
+    color: #666;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.saved-location-card .location-features {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.saved-location-card .feature-tag {
+    background: #f8f9fa;
+    color: #495057;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.saved-location-card .saved-date {
+    color: #6c757d;
+    font-size: 0.8rem;
+    font-style: italic;
+    margin: 0;
+}
+
+.no-saved-locations {
+    text-align: center;
+    padding: 2rem;
+    color: #6c757d;
+}
+
+.no-saved-locations p {
+    margin: 0.5rem 0;
+}
+
+.no-saved-locations p:first-child {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -335,14 +425,6 @@
     .edit-field input {
         width: 100%;
         min-width: auto;
-    }
-    
-    .action-buttons {
-        flex-direction: column;
-    }
-    
-    .action-buttons button {
-        width: 100%;
     }
 }
 

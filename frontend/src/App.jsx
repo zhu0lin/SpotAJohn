@@ -15,6 +15,7 @@ import SignUp from "./routes/SignUp";
 import Login from "./routes/Login";
 import UserHome from "./routes/UserHome";
 import UserProfile from "./routes/UserProfile";
+import SavedLocations from "./routes/SavedLocations";
 import LocationMap from "./routes/LocationMap";
 import LocationList from "./routes/LocationList";
 
@@ -52,6 +53,7 @@ function App() {
 
           <Route path='/home' element={user ? <UserHome /> : <Navigate to='/' replace />} />
           <Route path='/profile' element={user ? <UserProfile user={user} /> : <Navigate to='/' replace />} />
+          <Route path='/saved-locations' element={user ? <SavedLocations /> : <Navigate to='/' replace />} />
           <Route path='/location-map' element={user ? <LocationMap /> : <Navigate to='/' replace />} />
           <Route path='/location-list' element={user ? <LocationList /> : <Navigate to='/' replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />

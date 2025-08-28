@@ -1,0 +1,285 @@
+.saved-locations-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+}
+
+.saved-locations-main {
+    flex: 1;
+    padding: 2rem 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #f5c6cb;
+}
+
+.error-close {
+    background: none;
+    border: none;
+    color: #721c24;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-close:hover {
+    color: #491217;
+}
+
+.saved-locations-content {
+    margin-bottom: 2rem;
+}
+
+.loading-container {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.loading-container p {
+    margin-top: 1rem;
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.saved-locations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.saved-location-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.saved-location-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.location-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: #333;
+    font-weight: 600;
+    flex: 1;
+    padding-right: 1rem;
+}
+
+.remove-location-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-location-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.location-address {
+    color: #666;
+    margin: 0 0 1rem 0;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.location-features {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.feature-tag {
+    background: #e3f2fd;
+    color: #1976d2;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    border: 1px solid #bbdefb;
+}
+
+.saved-date {
+    color: #999;
+    font-size: 0.9rem;
+    margin: 0;
+    font-style: italic;
+}
+
+.no-saved-locations {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.empty-state {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.empty-state-icon {
+    width: 64px;
+    height: 64px;
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    margin-bottom: 1.5rem;
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    color: #666;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: #999;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.browse-locations-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1.5rem;
+}
+
+.browse-locations-btn:hover {
+    background: #218838;
+    transform: translateY(-1px);
+}
+
+.navigation-section {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.back-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Back to Dashboard Button Styles (matching LocationMap) */
+.back-dashboard-wrapper {
+    margin-top: 0.5rem;
+}
+
+.back-dashboard-btn {
+    margin-top: 0.5rem;
+    background: none;
+    border: 1px solid #28A745;
+    color: #28A745;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.back-dashboard-btn:hover {
+    background: #28A745;
+    color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .saved-locations-main {
+        padding: 1rem 0.5rem;
+    }
+    
+    .page-header h1 {
+        font-size: 2rem;
+    }
+    
+    .saved-locations-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .saved-location-card {
+        padding: 1rem;
+    }
+    
+    .location-header h3 {
+        font-size: 1.2rem;
+    }
+}

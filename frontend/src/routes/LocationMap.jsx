@@ -44,11 +44,21 @@ export default function LocationMap() {
             });
 
             const { Map, InfoWindow } = await loader.importLibrary("maps");
-            const { AdvancedMarkerElement, PinElement } = await loader.importLibrary("marker");
+            const { AdvancedMarkerElement } = await loader.importLibrary("marker");
             
-            // Default to New York City coordinates
+            // Get user's current location or default to New York City
+            let center = { lat: 40.7128, lng: -74.0060 }; // Default to New York City
+            
+            try {
+                const position = await getCurrentPosition();
+                center = { lat: position.coords.latitude, lng: position.coords.longitude };
+                console.log('Using user location:', center);
+            } catch (locationError) {
+                console.log('Using default location (NYC):', locationError.message);
+            }
+            
             const mapInstance = new Map(mapRef.current, {
-                center: { lat: 40.7128, lng: -74.0060 }, // New York City
+                center: center,
                 zoom: 13,
                 mapId: "DEMO_MAP_ID", // Optional: for custom styling
             });
@@ -58,6 +68,26 @@ export default function LocationMap() {
             console.error('Error initializing map:', error);
             setError('Failed to load map: ' + error.message);
         }
+    };
+
+    // Helper function to get user's current position
+    const getCurrentPosition = () => {
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                reject(new Error('Geolocation is not supported by this browser'));
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => resolve(position),
+                (error) => reject(error),
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        });
     };
 
     // Fetch locations from backend
@@ -95,7 +125,7 @@ export default function LocationMap() {
 
         try {
             const { InfoWindow } = await google.maps.importLibrary("maps");
-            const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
+            const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
             // Create info window for markers
             const infoWindow = new InfoWindow({
@@ -110,21 +140,17 @@ export default function LocationMap() {
 
             // Create markers array
             const markers = locationData.map((location, i) => {
-                // Make all markers red
-                const backgroundColor = "#dc3545"; // Red
-                const borderColor = "#c82333";
-
-                // Create custom pin element
-                const pinElement = new PinElement({
-                    glyph: `${i + 1}`,
-                    glyphColor: "white",
-                    background: backgroundColor,
-                    borderColor: borderColor,
-                });
+                // Create custom icon element using the icon.png
+                const iconElement = document.createElement('img');
+                iconElement.src = '/src/assets/icon.png';
+                iconElement.style.width = '32px';
+                iconElement.style.height = '32px';
+                iconElement.style.cursor = 'pointer';
+                iconElement.alt = location.name;
 
                 const marker = new AdvancedMarkerElement({
                     position: { lat: location.latitude, lng: location.longitude },
-                    content: pinElement.element,
+                    content: iconElement,
                     title: location.name,
                 });
 

@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 // Import routes
 import locationsRouter from './routes/locations.js';
 import nycLocationsRouter from './routes/nycLocations.js';
+import userLocationsRouter from './routes/userLocations.js';
 
 // Load environment variables
 dotenv.config();
@@ -34,6 +35,7 @@ app.get('/', (req, res) => {
 // API routes
 app.use('/api/locations', locationsRouter);
 app.use('/api/nyc-locations', nycLocationsRouter);
+app.use('/api/user-locations', userLocationsRouter);
 
 // Start server
 app.listen(PORT, () => {

@@ -14,7 +14,7 @@ RUN npm install --omit=dev
 COPY . .
 
 # Expose port expected by Cloud Run (informational)
-EXPOSE 8080
+EXPOSE 3000
 
 # Start the app (production)
 CMD ["npm", "start"]

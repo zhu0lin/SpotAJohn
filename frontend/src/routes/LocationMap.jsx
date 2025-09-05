@@ -10,6 +10,8 @@ import Footer from "../components/Footer";
 
 /* Style imports */
 import '../styles/LocationMap.css';
+import { config } from '../config.js';
+import toiletIconUrl from '../assets/icon.png';
 
 export default function LocationMap() {
     const navigate = useNavigate();
@@ -95,8 +97,8 @@ export default function LocationMap() {
         try {
             setLoading(true);
             console.log('Fetching locations from backend...');
-            const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-            const response = await fetch(`${apiBaseUrl}/api/locations`);
+            const apiBaseUrl = config.backend.baseURL;
+            const response = await fetch(`${apiBaseUrl}${config.backend.endpoints.locations}`);
             const data = await response.json();
             
             console.log('Received locations data:', data.success ? data.data.length : 'failed');
@@ -140,9 +142,9 @@ export default function LocationMap() {
 
             // Create markers array
             const markers = locationData.map((location, i) => {
-                // Create custom icon element using the icon.png
+                // Create custom icon element using the built asset URL
                 const iconElement = document.createElement('img');
-                iconElement.src = '/src/assets/icon.png';
+                iconElement.src = toiletIconUrl;
                 iconElement.style.width = '32px';
                 iconElement.style.height = '32px';
                 iconElement.style.cursor = 'pointer';

@@ -10,6 +10,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 /* Style imports */
 import '../styles/SavedLocations.css';
+import { config } from '../config.js';
 
 export default function SavedLocations() {
     const navigate = useNavigate();
@@ -29,9 +30,9 @@ export default function SavedLocations() {
             if (!user) return;
             
             const token = await user.getIdToken();
-            const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            const apiBaseUrl = config.backend.baseURL;
             
-            const response = await fetch(`${apiBaseUrl}/api/user-locations`, {
+            const response = await fetch(`${apiBaseUrl}${config.backend.endpoints.userLocations}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -57,9 +58,9 @@ export default function SavedLocations() {
             if (!user) return;
             
             const token = await user.getIdToken();
-            const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+            const apiBaseUrl = config.backend.baseURL;
             
-            const response = await fetch(`${apiBaseUrl}/api/user-locations/${locationId}`, {
+            const response = await fetch(`${apiBaseUrl}${config.backend.endpoints.userLocations}/${locationId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

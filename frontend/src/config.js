@@ -2,8 +2,8 @@
 export const config = {
     // Backend API configuration
     backend: {
-        baseURL: process.env.NODE_ENV === 'production' 
-            ? 'https://spot-a-john-backend-415448404687.us-east1.run.app' 
+        baseURL: (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.PROD)
+            ? (import.meta.env.VITE_API_URL || 'https://spot-a-john-backend-415448404687.us-east1.run.app')
             : 'http://localhost:3000',
 
         endpoints: {
